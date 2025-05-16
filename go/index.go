@@ -47,7 +47,7 @@ var requestMap = make(map[string]interface{})
 func GetAuthRequest(w http.ResponseWriter, r *http.Request) {
 
 	// Audience is verifier id
-	rURL := "<NGROK_URL>"
+	rURL := "https://789c-79-168-104-100.ngrok-free.app"
 	sessionID := 1
 	CallbackURL := "/api/callback"
 	Audience := "did:polygonid:polygon:amoy:2qQ68JkRcf3xrHPQPWZei3YeVzHPP58wYNxx2mEouR"
@@ -64,13 +64,12 @@ func GetAuthRequest(w http.ResponseWriter, r *http.Request) {
 	mtpProofRequest.Query = map[string]interface{}{
 		"allowedIssuers": []string{"*"},
 		"credentialSubject": map[string]interface{}{
-			"birthday": map[string]interface{}{
-				"$lt": 20000101,
+			"number": map[string]interface{}{
+				"$eq": 7,
 			},
 		},
-		"context": "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld",
-
-		"type": "KYCAgeCredential",
+		"context": "ipfs://QmWRE4z9BFWV8EBUk9VgvGitiLs3hWs5jZRQDFPULDrtEb",
+		"type":    "Test",
 	}
 	request.Body.Scope = append(request.Body.Scope, mtpProofRequest)
 
@@ -103,7 +102,7 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Add Polygon Mumbai RPC node endpoint - needed to read on-chain state
-	ethURL := "AMOY_RPC_URL"
+	ethURL := "https://polygon-mainnet.g.alchemy.com/v2/vM6897Q8uJegP-_09TmUcuklkRu6k-aX"
 
 	// Add identity state contract address
 	contractAddress := "0x1a4cC30f2aA0377b0c3bc9848766D90cb4404124"
