@@ -6,7 +6,7 @@
     "body": {
         "reason": "airdrop participation",
         "transaction_data": {
-            "contract_address": "0xf464BCBB661b03189215DC062Cd602Ab804F194E",
+            "contract_address": "0xf3b2CD144940D1D116e4A58B8d38B898aAe8cfed",
             "method_id": "b68967e2",
             "chain_id": 80002,
             "network": "polygon-amoy"
