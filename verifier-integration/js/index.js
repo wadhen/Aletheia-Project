@@ -29,7 +29,7 @@ const requestMap = new Map();
 // GetQR returns auth request
 async function getAuthRequest(req, res) {
   // Audience is verifier id
-  const hostUrl = "<NGROK_URL>";
+  const hostUrl = "https://fa65-79-168-104-100.ngrok-free.app";
   const sessionId = 1;
   const callbackURL = "/api/callback";
   const audience =
@@ -49,7 +49,7 @@ async function getAuthRequest(req, res) {
       allowedIssuers: ["*"],
       type: "KYCAgeCredential",
       context:
-        "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld",
+        "https://raw.githubusercontent.com/wadhen/PrivadoIdCredentials/refs/heads/main/kyc-v3.json-ld",
       credentialSubject: {
         birthday: {
           $lt: 20000101,
@@ -79,7 +79,7 @@ async function callback(req, res) {
 
   const resolvers = {
     ["polygon:amoy"]: new resolver.EthStateResolver(
-    "<Polygon_Amoy_RPC_URL>",
+    "https://polygon-amoy.g.alchemy.com/v2/vM6897Q8uJegP-_09TmUcuklkRu6k-aX",
     "0x1a4cC30f2aA0377b0c3bc9848766D90cb4404124"
   ),
   ["privado:main"]: new resolver.EthStateResolver(

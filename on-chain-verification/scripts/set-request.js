@@ -108,12 +108,12 @@ async function main() {
       ).toString();
     
   // add the address of the contract just deployed
-  const ERC20VerifierAddress = "0xf464BCBB661b03189215DC062Cd602Ab804F194E"
+  const ERC20VerifierAddress = "0xf3b2CD144940D1D116e4A58B8d38B898aAe8cfed"
 
   let erc20Verifier = await hre.ethers.getContractAt("ERC20Verifier", ERC20VerifierAddress)
 
 
-  const validatorAddress = "0xf464BCBB661b03189215DC062Cd602Ab804F194E"; // sig validator
+  const validatorAddress = "0x8c99F13dc5083b1E4c16f269735EaD4cFbc4970d"; // sig validator
   // const validatorAddress = "0xEEd5068AD8Fecf0b9a91aF730195Fef9faB00356"; // mtp validator
 
   const invokeRequestMetadata = {
