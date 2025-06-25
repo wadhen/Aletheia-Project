@@ -29,7 +29,7 @@ const requestMap = new Map();
 // GetQR returns auth request
 async function getAuthRequest(req, res) {
   // Audience is verifier id
-  const hostUrl = "https://fa65-79-168-104-100.ngrok-free.app";
+  const hostUrl = "https://1ac6-79-168-104-100.ngrok-free.app";
   const sessionId = 1;
   const callbackURL = "/api/callback";
   const audience =
@@ -47,12 +47,12 @@ async function getAuthRequest(req, res) {
     circuitId: "credentialAtomicQuerySigV2",
     query: {
       allowedIssuers: ["*"],
-      type: "KYCAgeCredential",
+      type: "PurchaseCredential",
       context:
-        "https://raw.githubusercontent.com/wadhen/PrivadoIdCredentials/refs/heads/main/kyc-v3.json-ld",
+        "ipfs://QmP9QdCfxKTFX76c99e2NmepHJ8mBt5B5CERdFMAqZcL7k",
       credentialSubject: {
-        birthday: {
-          $lt: 20000101,
+        itemId	: {
+          $eq: "ad1323fs",
         },
       },
     },
