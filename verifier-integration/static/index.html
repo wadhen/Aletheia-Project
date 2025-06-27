@@ -1,29 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verify with Privado ID (Demo)</title>
-  <!-- Link to the external CSS file -->
-  <link rel="stylesheet" href="styles.css">
-  <!-- Import the QR Code Generator Library -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for Inter font and general styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
+        }
+        /* Hide scrollbar for a cleaner look while still allowing scrolling */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">Verify with Privado ID</div>
+<body class="min-h-screen flex flex-col items-center py-8 px-4">
+    <div class="container bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-4xl">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-4">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Reviews</h1>
+            <a href="review.html" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                Add New Review
+            </a>
+        </header>
 
-    <div class="subheader">Click the button below:</div>
-    <!-- Button to Universal Link -->
-    <a id="button" href="#" target="_blank" class="action-button">Verify</a>
-    
-    <div class="subheader">OR</div>
-    <div class="subheader">Scan using Mobile Wallet:</div>
-    <!-- Div for QR Code -->
-    <div id="qrcode"></div>
-  </div>
+        <main id="reviews-container" class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+            <!-- Review cards will be dynamically loaded here by JavaScript -->
+            <p class="text-gray-500 text-center col-span-full">Loading reviews...</p>
+        </main>
 
-  <!-- Include the external script file -->
-  <script src="index.js"></script>
+        <footer class="mt-8 pt-4 border-t text-center text-gray-500 text-sm">
+            &copy; 2025 Review Platform. All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        // Function to load and display reviews
+        function loadReviews() {
+            const reviewsContainer = document.getElementById('reviews-container');
+            reviewsContainer.innerHTML = ''; // Clear existing content
+
+            const reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+
+            if (reviews.length === 0) {
+                reviewsContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full py-8">No reviews yet. Be the first to add one!</p>';
+                return;
+            }
+
+            // Sort reviews by date in descending order (most recent first)
+            reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            reviews.forEach(review => {
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'bg-gray-50 p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 ease-in-out flex flex-col justify-between';
+
+                // Function to generate star icons based on rating
+                function generateStars(rating) {
+                    let starsHtml = '';
+                    for (let i = 1; i <= 5; i++) {
+                        if (i <= rating) {
+                            starsHtml += '<span class="text-yellow-400">&#9733;</span>'; // Filled star
+                        } else {
+                            starsHtml += '<span class="text-gray-300">&#9734;</span>'; // Empty star
+                        }
+                    }
+                    return starsHtml;
+                }
+
+                reviewCard.innerHTML = `
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2 truncate">${review.title}</h2>
+                        <div class="flex items-center mb-3">
+                            <span class="text-lg font-bold mr-2">${review.rating}</span>
+                            <div class="flex">${generateStars(review.rating)}</div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3 line-clamp-3">${review.comment}</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-500">
+                        <p class="mb-1">Reviewed by: <span class="font-medium text-gray-700">${review.reviewerName}</span></p>
+                        <p>On: <span class="font-medium text-gray-700">${new Date(review.date).toLocaleDateString()}</span></p>
+                        <a href="details.html?id=${review.id}" class="inline-block mt-3 text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200">
+                            Read Full Review &rarr;
+                        </a>
+                    </div>
+                `;
+                reviewsContainer.appendChild(reviewCard);
+            });
+        }
+
+        // Load reviews when the page loads
+        document.addEventListener('DOMContentLoaded', loadReviews);
+    </script>
 </body>
 </html>
