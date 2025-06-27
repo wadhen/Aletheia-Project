@@ -6,6 +6,9 @@
     <title>Add New Review</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+      <link rel="stylesheet" href="styles.css">
+  <!-- Import the QR Code Generator Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <style>
         /* Custom CSS for Inter font and general styling */
         body {
@@ -113,9 +116,11 @@
 
         <footer class="mt-8 pt-4 border-t text-center text-gray-500 text-sm">
             &copy; 2025 Review Platform. All rights reserved.
+            <div id="qrcode"></div>
+            <a id="button" href="#" target="_blank" class="action-button">Verify</a>
         </footer>
     </div>
-
+<script src="index.js"></script>
     <script>
         // Function to generate a unique ID
         function generateUniqueId() {
