@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Review</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for Inter font and general styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
+        }
+        /* Hide scrollbar for a cleaner look */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Star rating styles */
+        .rating-stars input[type="radio"] {
+            display: none;
+        }
+
+        .rating-stars label {
+            font-size: 2.5rem; /* Larger stars */
+            color: #ccc; /* Default star color */
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label {
+            color: #ffda00; /* Hover color */
+        }
+
+        .rating-stars input[type="radio"]:checked ~ label {
+            color: #ffda00; /* Checked color */
+        }
+
+        /* Reverse order for star selection (so clicking rightmost star selects it and all to its left) */
+        .rating-stars {
+            direction: rtl; /* Stars align right, but text remains LTR */
+            display: flex;
+            justify-content: center;
+        }
+        .rating-stars label:nth-child(5) { order: 1; }
+        .rating-stars label:nth-child(4) { order: 2; }
+        .rating-stars label:nth-child(3) { order: 3; }
+        .rating-stars label:nth-child(2) { order: 4; }
+        .rating-stars label:nth-child(1) { order: 5; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-8 px-4">
+    <div class="container bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-2xl">
+        <header class="flex justify-between items-center mb-6 border-b pb-4">
+            <h1 class="text-3xl font-bold text-gray-800">Add New Review</h1>
+            <a href="index.html" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded-md shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                Back to Reviews
+            </a>
+        </header>
+
+        <main>
+            <form id="review-form" class="space-y-6">
+                <div>
+                    <label for="product-title" class="block text-sm font-medium text-gray-700 mb-1">Product Title</label>
+                    <input type="text" id="product-title" name="product-title" required
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                           placeholder="e.g., Ultimate Wireless Headphones">
+                </div>
+
+                <div>
+                    <label for="reviewer-name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                    <input type="text" id="reviewer-name" name="reviewer-name" required
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                           placeholder="e.g., John Doe">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                    <div class="rating-stars flex justify-center space-x-1">
+                        <input type="radio" id="star5" name="rating" value="5" required><label for="star5" title="5 stars">&#9733;</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars">&#9733;</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars">&#9733;</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars">&#9733;</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star">&#9733;</label>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="review-comment" class="block text-sm font-medium text-gray-700 mb-1">Your Review</label>
+                    <textarea id="review-comment" name="review-comment" rows="5" required
+                              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                              placeholder="Write your detailed review here..."></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <button type="reset" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-md shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                        Clear Form
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                        Submit Review
+                    </button>
+                </div>
+            </form>
+            <!-- Message box for success/error -->
+            <div id="message-box" class="mt-4 p-3 rounded-md hidden"></div>
+        </main>
+
+        <footer class="mt-8 pt-4 border-t text-center text-gray-500 text-sm">
+            &copy; 2025 Review Platform. All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        // Function to generate a unique ID
+        function generateUniqueId() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0,
+                    v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Function to show messages in the message box
+        function showMessageBox(message, type) {
+            const msgBox = document.getElementById('message-box');
+            msgBox.textContent = message;
+            msgBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            if (type === 'success') {
+                msgBox.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                msgBox.classList.add('bg-red-100', 'text-red-800');
+            }
+            setTimeout(() => {
+                msgBox.classList.add('hidden');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        document.getElementById('review-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const title = document.getElementById('product-title').value.trim();
+            const reviewerName = document.getElementById('reviewer-name').value.trim();
+            const rating = document.querySelector('input[name="rating"]:checked');
+            const comment = document.getElementById('review-comment').value.trim();
+
+            if (!title || !reviewerName || !rating || !comment) {
+                showMessageBox('Please fill in all required fields and select a rating.', 'error');
+                return;
+            }
+
+            const newReview = {
+                id: generateUniqueId(),
+                title: title,
+                reviewerName: reviewerName,
+                rating: parseInt(rating.value),
+                comment: comment,
+                date: new Date().toISOString() // Store date in ISO format for easy parsing
+            };
+
+            try {
+                let reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+                reviews.push(newReview);
+                localStorage.setItem('reviews', JSON.stringify(reviews));
+
+                showMessageBox('Review submitted successfully!', 'success');
+                // Redirect to the home page after a short delay
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error("Error saving review to local storage:", error);
+                showMessageBox('Failed to save review. Please try again.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

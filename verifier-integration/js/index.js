@@ -29,7 +29,7 @@ const requestMap = new Map();
 // GetQR returns auth request
 async function getAuthRequest(req, res) {
   // Audience is verifier id
-  const hostUrl = "https://1ac6-79-168-104-100.ngrok-free.app";
+  const hostUrl = " https://1d09-79-168-104-100.ngrok-free.app";
   const sessionId = 1;
   const callbackURL = "/api/callback";
   const audience =
