@@ -19,6 +19,24 @@ app.post("/api/callback", (req, res) => {
   callback(req, res);
 });
 
+app.get("/api/check-verification", (req, res) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+  res.set("Surrogate-Control", "no-store");
+
+  const sessionId = req.query.sessionId;
+  const authRequest = requestMap.get(`${sessionId}`);
+
+  if (!authRequest) {
+    return res.status(404).json({ verified: false, message: "Session not found" });
+  }
+
+  const verified = authRequest.verified === true;
+
+  return res.status(200).json({ verified });
+});
+
 app.listen(port, () => {
   console.log("server running on port 8080");
 });
@@ -29,7 +47,7 @@ const requestMap = new Map();
 // GetQR returns auth request
 async function getAuthRequest(req, res) {
   // Audience is verifier id
-  const hostUrl = "<NGROK_URL>";
+  const hostUrl = "https://59e8-79-168-104-100.ngrok-free.app";
   const sessionId = 1;
   const callbackURL = "/api/callback";
   const audience =
@@ -47,12 +65,12 @@ async function getAuthRequest(req, res) {
     circuitId: "credentialAtomicQuerySigV2",
     query: {
       allowedIssuers: ["*"],
-      type: "KYCAgeCredential",
+      type: "PurchaseCredential",
       context:
-        "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld",
+        "ipfs://QmP9QdCfxKTFX76c99e2NmepHJ8mBt5B5CERdFMAqZcL7k",
       credentialSubject: {
-        birthday: {
-          $lt: 20000101,
+        itemId	: {
+          $eq: "ad1323fs",
         },
       },
     },
@@ -79,7 +97,7 @@ async function callback(req, res) {
 
   const resolvers = {
     ["polygon:amoy"]: new resolver.EthStateResolver(
-    "<Polygon_Amoy_RPC_URL>",
+    "https://polygon-amoy.g.alchemy.com/v2/vM6897Q8uJegP-_09TmUcuklkRu6k-aX",
     "0x1a4cC30f2aA0377b0c3bc9848766D90cb4404124"
   ),
   ["privado:main"]: new resolver.EthStateResolver(
@@ -100,14 +118,18 @@ async function callback(req, res) {
 
   try {
     const opts = {
-      AcceptedStateTransitionDelay: 5 * 60 * 1000, // 5 minute
+      AcceptedStateTransitionDelay: 5 * 60 * 1000, // 5 minutes
     };
-    authResponse = await verifier.fullVerify(tokenStr, authRequest, opts);
+  
+    const authResponse = await verifier.fullVerify(tokenStr, authRequest, opts);
+  
+    // ✅ Mark session as verified in memory
+    authRequest.verified = true;
+  
+    return res.status(200).json(authResponse);
+  
   } catch (error) {
-    return res.status(500).send(error);
+    console.error("Verification failed:", error);
+    return res.status(500).send("Verification error");
   }
-  return res
-    .status(200)
-    .set("Content-Type", "application/json")
-    .send(authResponse);
 }
