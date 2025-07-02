@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verify with Privado ID (Demo)</title>
 
-  <!-- External stylesheet -->
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- QR Code generator library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </head>
 <body>
@@ -17,7 +15,6 @@
 
     <div class="subheader" id="instruction-text">Click the button below:</div>
 
-    <!-- Universal link button (will be updated by JavaScript) -->
     <a
       id="universal-link-button"
       href="javascript:void(0)"
@@ -32,23 +29,55 @@
     <div class="subheader" id="or-text">OR</div>
     <div class="subheader" id="scan-text">Scan using Mobile Wallet:</div>
 
-    <!-- QR Code container -->
     <div id="qrcode" style="display: none;"></div>
 
-    <!-- Status message area -->
     <div id="status-message" class="status-message"></div>
 
-    <!-- Dashboard button shown after verification -->
     <button
-    id="dashboard-button"
-    class="action-button disabled-button"
-    disabled
+      id="dashboard-button"
+      class="action-button disabled-button"
+      disabled
     >
-    Go to Dashboard
+      Go to Dashboard
     </button>
+
+    <hr/>
+
+    <div id="review-form-container" class="review-form-container disabled-form">
+        <h2 class="header">Submit a Review</h2>
+        <form id="review-form">
+            <label for="review-title">Review Title:</label>
+            <input type="text" id="review-title" placeholder="e.g., Great Product!" required>
+
+            <label>Rating:</label>
+            <div class="star-rating" id="review-star-rating">
+                <span data-value="1">&#9733;</span>
+                <span data-value="2">&#9733;</span>
+                <span data-value="3">&#9733;</span>
+                <span data-value="4">&#9733;</span>
+                <span data-value="5">&#9733;</span>
+            </div>
+            <input type="hidden" id="review-rating" name="rating" value="0" required>
+
+
+            <label for="review-comment">Your Review:</label>
+            <textarea id="review-comment" placeholder="Share your thoughts..." required></textarea>
+
+            <label for="reviewer-name">Your Name:</label>
+            <input type="text" id="reviewer-name" placeholder="e.g., John Doe" required>
+
+            <button type="submit" id="submit-review-button" class="action-button disabled-button" disabled>Submit Review</button>
+        </form>
+    </div>
+
+    <hr/>
+
+    <div class="subheader">
+        <a href="reviews.html" class="action-button enabled-button" style="display: inline-block;">View All Reviews</a>
+    </div>
+
   </div>
 
-  <!-- External JavaScript -->
   <script src="index.js"></script>
 </body>
 </html>
