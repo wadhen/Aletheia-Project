@@ -35,7 +35,7 @@ function loadAllReviews() {
         reviewCard.innerHTML = `
             <div>
                 <h2 class="text-xl font-bold text-gray-900 mb-2 truncate">${review.title}</h2>
-                <div class="flex items-center mb-3">
+                <div class="flex items-center">
                     <span class="text-lg font-bold mr-2">${review.rating}</span>
                     <div class="flex">${generateStars(review.rating)}</div>
                 </div>

@@ -47,7 +47,7 @@ const requestMap = new Map();
 // GetQR returns auth request
 async function getAuthRequest(req, res) {
   // Audience is verifier id
-  const hostUrl = "https://9441aef6159c.ngrok-free.app";
+  const hostUrl = "https://8448ba870dca.ngrok-free.app";
   const sessionId = 1;
   const callbackURL = "/api/callback";
   const audience =
@@ -57,90 +57,44 @@ async function getAuthRequest(req, res) {
 
   // Generate request for basic authentication
   const request = auth.createAuthorizationRequest("test flow", audience, uri);
-
-  /*
-  // Add request for a specific proof
-  const proofRequest = {
-    id: 1,
-    circuitId: "credentialAtomicQuerySigV2",
-    query: {
-      allowedIssuers: ["*"],
-      type: "PurchaseCredential",
-      context:
-        "ipfs://QmP9QdCfxKTFX76c99e2NmepHJ8mBt5B5CERdFMAqZcL7k",
-      credentialSubject: {
-        itemId	: {
-          $eq: "ad1323fs",
+  
+  const proofRequest = [
+    {
+      "circuitId": "credentialAtomicQuerySigV2",
+      "id": 1754136501,
+      "query": {
+        "allowedIssuers": [
+          "did:iden3:polygon:amoy:xH577MLAj2Y67FM8L5859G1Pzf1eEPToMq3UB3ChY"
+        ],
+        "context": "ipfs://Qmd3nzUyUi45HEbxEikgrjAG8crpE971vJg5NibjWsL7jY",
+        "credentialSubject": {
+          "ConcertName": {
+            "$eq": "Midnight Echoes Tour"
+          }
         },
-      },
+        "type": "ConcertCredentialAttendance"
+      }
     },
-  };
-  */
-
-  //Driving Service Credential did certa
-  const proofRequest = {
-    id: 1,
-    circuitId: "credentialAtomicQuerySigV2",
-    query: {
-      allowedIssuers: ["did:iden3:polygon:amoy:xH577MLAj2Y67FM8L5859G1Pzf1eEPToMq3UB3ChY"],
-      type: "TeseCredentialExemple",
-      context:
-        "ipfs://QmUV7eitadZWcatxeGCEHaAjJuWDADu1mDAemroPSr1Vys",
-      credentialSubject: {
-        ServiceName	: {
-          $eq: "Uber",
+    {
+      "circuitId": "credentialAtomicQuerySigV2",
+      "id": 1754013968,
+      "query": {
+        "allowedIssuers": [
+          "did:iden3:polygon:amoy:xH577MLAj2Y67FM8L5859G1Pzf1eEPToMq3UB3ChY"
+        ],
+        "context": "ipfs://Qmd3nzUyUi45HEbxEikgrjAG8crpE971vJg5NibjWsL7jY",
+        "credentialSubject": {
+          "ConcertDate": {
+            "$eq": "2025-07-03"
+          }
         },
-      },
-    },
-  };
- 
-
-  //ConcertAttendanceCredential did errada
-  /*
-  const proofRequest = {
-    id: 1,
-    circuitId: "credentialAtomicQuerySigV2",
-    query: {
-      allowedIssuers: [did:iden3:polygon:amoy:xH577MLAj2Y67FM8L5859G1Pzf1eEPToMq3UB3C"],
-      type: "TeseCredentialExemple",
-      context:
-        "ipfs://QmeMkio4yvjeTNPrCoBcSkeTD4XNyY8RCuN3MUojz4Y4pL",
-      credentialSubject: {
-        ConcertName	: {
-          $eq: "Taylor Swift – The Eras Tour",
-        },
-        ConcertDate	: {
-          $eq: "2025-07-09",
-        },
-      },
-    },
-  };
-  */
-
-  //Learning Session Credential
-  /*
-  const proofRequest = {
-    id: 1,
-    circuitId: "credentialAtomicQuerySigV2",
-    query: {
-      allowedIssuers: ["*"],
-      type: "TeseCredentialExemple",
-      context:
-        "ipfs://QmepQ2FiaYkgBfTfjBAmqwBLcmf9xehYV11CLz46MBqnSX",
-      credentialSubject: {
-        SessionTitle	: {
-          $eq: "Street Photography Essentials",
-        },
-        SessionDate	: {
-          $eq: "2025-07-24",
-        },
-      },
-    },
-  };
-  */
+        "type": "ConcertCredentialAttendance"
+      }
+    }
+  ];
 
   const scope = request.body.scope ?? [];
-  request.body.scope = [...scope, proofRequest];
+  request.body.scope = [...scope, ...proofRequest];
 
   // Store auth request in map associated with session ID
   requestMap.set(`${sessionId}`, request);
