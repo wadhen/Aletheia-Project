@@ -1,5 +1,5 @@
-const baseUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}`; // Adjusted to handle base URL correctly
-let sessionId = 1; // Ideally dynamic, but using 1 for demo purposes
+const baseUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}`;
+let sessionId = null; // Will be set after fetching from the server
 
 window.onload = () => {
   const qrCodeEl = document.getElementById('qrcode');
@@ -55,16 +55,20 @@ window.onload = () => {
       throw new Error('Failed to fetch API data');
     })
     .then(data => {
+      // **GET THE DYNAMIC SESSION ID FROM THE SERVER RESPONSE**
+      sessionId = data.sessionId;
+      const authRequest = data.request;
+
       // Show QR Code
-      generateQrCode(qrCodeEl, data);
+      generateQrCode(qrCodeEl, authRequest);
       qrCodeEl.style.display = 'block';
 
       // Encode request and set universal link
-      const encodedRequest = btoa(JSON.stringify(data));
+      const encodedRequest = btoa(JSON.stringify(authRequest));
       linkButton.href = `https://wallet.privado.id/#i_m=${encodedRequest}`;
       linkButton.style.display = 'inline-block';
 
-      // Poll for verification
+      // Poll for verification using the new sessionId
       startPolling(sessionId, statusMessage, dashboardButton, reviewFormContainer, submitReviewButton);
     })
     .catch(error => console.error('Error fetching data from API:', error));
@@ -84,6 +88,7 @@ function generateQrCode(element, data) {
 
 function startPolling(sessionId, statusMessage, dashboardButton, reviewFormContainer, submitReviewButton) {
   const interval = setInterval(() => {
+    // **USE THE DYNAMIC SESSION ID FOR POLLING**
     fetch(`${baseUrl}api/check-verification?sessionId=${sessionId}`)
       .then(res => {
         if (res.status === 200) return res.json();

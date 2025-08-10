@@ -47,11 +47,11 @@ const requestMap = new Map();
 // GetQR returns auth request
 async function getAuthRequest(req, res) {
   // Audience is verifier id
-  const hostUrl = "https://8448ba870dca.ngrok-free.app";
-  const sessionId = 1;
+  const hostUrl = "https://ae5c7a65bdc5.ngrok-free.app";
+  // **GENERATE A UNIQUE SESSION ID DYNAMICALLY**
+  const sessionId = Date.now().toString(); // Simple, dynamic session ID
   const callbackURL = "/api/callback";
-  const audience =
-    "did:polygonid:polygon:amoy:2qQ68JkRcf3xrHPQPWZei3YeVzHPP58wYNxx2mEouR";
+  const audience = "did:polygonid:polygon:amoy:2qQ68JkRcf3xrHPQPWZei3YeVzHPP58wYNxx2mEouR";
 
   const uri = `${hostUrl}${callbackURL}?sessionId=${sessionId}`;
 
@@ -61,7 +61,7 @@ async function getAuthRequest(req, res) {
   const proofRequest = [
     {
       "circuitId": "credentialAtomicQuerySigV2",
-      "id": 1754136501,
+      "id": 1755145836,
       "query": {
         "allowedIssuers": [
           "did:iden3:polygon:amoy:xH577MLAj2Y67FM8L5859G1Pzf1eEPToMq3UB3ChY"
@@ -77,7 +77,7 @@ async function getAuthRequest(req, res) {
     },
     {
       "circuitId": "credentialAtomicQuerySigV2",
-      "id": 1754013968,
+      "id": 1754588417,
       "query": {
         "allowedIssuers": [
           "did:iden3:polygon:amoy:xH577MLAj2Y67FM8L5859G1Pzf1eEPToMq3UB3ChY"
@@ -98,8 +98,12 @@ async function getAuthRequest(req, res) {
 
   // Store auth request in map associated with session ID
   requestMap.set(`${sessionId}`, request);
-
-  return res.status(200).set("Content-Type", "application/json").send(request);
+  
+  // **SEND THE SESSION ID BACK IN THE RESPONSE**
+  return res.status(200).set("Content-Type", "application/json").send({
+      request,
+      sessionId
+  });
 }
 
 // Callback verifies the proof after sign-in callbacks
@@ -110,6 +114,8 @@ async function callback(req, res) {
   // get JWZ token params from the post request
   const raw = await getRawBody(req);
   const tokenStr = raw.toString().trim();
+   
+  //console.log("Received JWT Token:", tokenStr);
 
   const keyDIR = "../keys";
 
